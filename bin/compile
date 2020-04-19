@@ -465,14 +465,6 @@ case "${TOOL}" in
     gomodules)
         cd ${build}
 
-        # TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)
-        # and only do this if it's <1.14. The 1.14 release and beyond handles this automatically
-        # when the desired language version is 1.14+ and vendoring should be used.
-        # https://golang.org/doc/go1.14#vendor
-        if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
-            FLAGS+=(-mod=vendor)
-        fi
-
         step "Determining packages to install"
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
         if [ -z "${pkgs}" ]; then
